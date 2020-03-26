@@ -1,0 +1,9 @@
+.idea/
+venv/
+db.sqlite3
+__pycache__/
+**/settings/prod.py
+**/migrations/*.py
+!**/migrations/__init__.py
+*.log
+.coverage

@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:10.1-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+  python:
+    build:
+      context: .
+      dockerfile: docker/dev/python/Dockerfile
+    command: python manage.py runserver 0.0.0.0:8000
+    environment:
+      - DJANGO_SETTINGS_MODULE=application.settings.dev
+    volumes:
+      - .:/code
+    env_file:
+      - ./application/.env
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+  tests:
+    build:
+      context: .
+      dockerfile: docker/dev/python/Dockerfile
+    command: pytest -v --cov --cov-report term-missing
+    environment:
+      - DJANGO_SETTINGS_MODULE=application.settings.dev
+    volumes:
+      - .:/code
+    env_file:
+      - ./application/.env
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:
