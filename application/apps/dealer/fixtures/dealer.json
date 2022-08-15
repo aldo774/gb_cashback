@@ -1,0 +1,24 @@
+[
+  {
+    "model": "user.user",
+    "pk": "bb1c467e-1a9b-11ed-861d-0242ac120002",
+    "fields": {
+      "cpf": "15350946056",
+      "password": "pbkdf2_sha256$260000$LD8QtMgIf6MOoPnadpHtf6$3zk1etnxlHXVLspQGZMYVYP6g0UWED/3OtWF5j6cdUM=",
+      "create_date": "2022-08-11T18:25:43.511Z",
+      "write_date": "2022-08-11T18:25:43.511Z"
+    }
+  },
+  {
+    "model": "dealer.dealer",
+    "pk": "bb1c467e-1a9b-11ed-861d-0242ac120002",
+    "fields": {
+      "name": "John Wick",
+      "email": "johnwick@mail.com",
+      "user": "bb1c467e-1a9b-11ed-861d-0242ac120002",
+      "verified": true,
+      "create_date": "2022-08-11T18:25:43.511Z",
+      "write_date": "2022-08-11T18:25:43.511Z"
+    }
+  }
+]

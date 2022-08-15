@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 import os
 
 from application.apps.base.apps import Base
+from application.apps.dealer.apps import Dealer
 from application.apps.user.apps import User
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -33,6 +34,7 @@ ALLOWED_HOSTS = []
 # Application definition
 LOCAL_APPS = [
     Base.name,
+    Dealer.name,
     User.name,
 ]
 
