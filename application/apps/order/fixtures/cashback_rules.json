@@ -1,0 +1,32 @@
+[
+  {
+    "model": "order.cashbackrule",
+    "fields": {
+      "smallest_value": 0,
+      "biggest_value": 1000,
+      "coefficient": 0.1,
+      "create_date": "2022-08-11T18:25:43.511Z",
+      "write_date": "2022-08-11T18:25:43.511Z"
+    }
+  },
+  {
+    "model": "order.cashbackrule",
+    "fields": {
+      "smallest_value": 1000,
+      "biggest_value": 1500,
+      "coefficient": 0.15,
+      "create_date": "2022-08-11T18:25:43.511Z",
+      "write_date": "2022-08-11T18:25:43.511Z"
+    }
+  },
+  {
+    "model": "order.cashbackrule",
+    "fields": {
+      "smallest_value": 1500,
+      "biggest_value": 99999999.99,
+      "coefficient": 0.2,
+      "create_date": "2022-08-11T18:25:43.511Z",
+      "write_date": "2022-08-11T18:25:43.511Z"
+    }
+  }
+]
