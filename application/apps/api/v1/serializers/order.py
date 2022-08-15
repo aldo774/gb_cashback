@@ -5,6 +5,10 @@ from rest_framework import serializers
 from application.apps.order.models import Order
 
 
+class AccumulatedCashbackResponseSerializer(serializers.Serializer):
+    credit = serializers.DecimalField(max_digits=10, decimal_places=2)
+
+
 class CreateOrderRequestSerializer(serializers.Serializer):
     code = serializers.CharField()
     amount = serializers.DecimalField(max_digits=10, decimal_places=2)

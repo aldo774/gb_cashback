@@ -2,6 +2,7 @@ import json
 from decimal import Decimal
 
 import pytest
+import requests
 from django.urls import reverse
 from rest_framework import status
 
@@ -101,3 +102,50 @@ class TestOrders:
 
         assert response.status_code == status.HTTP_200_OK
         assert response_data[0]['code'] == 'XPTO001'
+
+
+@pytest.mark.django_db
+class TestAccumulatedCashback:
+
+    @pytest.fixture
+    def mocked_external_service(self, mocker):
+        request = mocker.patch('application.apps.order.services.requests.get')
+
+        response_mocked = mocker.MagicMock(
+            status_code=status.HTTP_200_OK, json=mocker.MagicMock()
+        )
+        response_mocked.json.return_value = {'body': {'credit': 4000}}
+        request.return_value = response_mocked
+
+        return request
+
+    @pytest.fixture
+    def mocked_broken_external_service(self, mocker):
+        request = mocker.patch('application.apps.order.services.requests.get')
+
+        response_mocked = mocker.MagicMock(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            raise_for_status=mocker.MagicMock(),
+            response=mocker.MagicMock()
+        )
+
+        response_mocked.raise_for_status.side_effect = requests.exceptions.HTTPError(
+            response=mocker.MagicMock()
+        )
+        request.return_value = response_mocked
+
+        return request
+
+    @pytest.mark.usefixtures("mocked_broken_external_service")
+    def test_shouldnt_get_accumulated_cashback_due_external_service_unavailable(self, client):
+        response = client.get(reverse('cashback'), {"cpf": "56821107068"})
+
+        assert response.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
+        assert response.json() == {'detail': 'Server is unstable, please try once again later'}
+
+    @pytest.mark.usefixtures("mocked_external_service")
+    def test_should_get_accumulated_cashback(self, client):
+        response = client.get(reverse('cashback'), {"cpf": "56821107068"})
+
+        assert response.status_code == status.HTTP_200_OK
+        assert response.json() == {'credit': 4000}

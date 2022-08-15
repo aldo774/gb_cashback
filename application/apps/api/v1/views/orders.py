@@ -9,12 +9,14 @@ from rest_framework.views import APIView
 from application.apps.api.v1.serializers.error import \
     GenericErrorResponseSerializer
 from application.apps.api.v1.serializers.order import (
-    CreateOrderRequestSerializer,
+    AccumulatedCashbackResponseSerializer, CreateOrderRequestSerializer,
     OrderListSerializer)
 from application.apps.order.exceptions import (DealerNotExists,
+                                               ExternalServiceBroken,
                                                InvalidOrderData,
                                                OrderAlreadyExists)
 from application.apps.order.services import (create_order,
+                                             get_accumulated_cashback,
                                              list_orders)
 
 
@@ -68,3 +70,32 @@ class OrderView(APIView):
         serializer = OrderListSerializer(result_page, many=True, context={'request': request})
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+class AccumulatedCashbackView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    @swagger_auto_schema(
+        responses={
+            200: openapi.Response(
+                description="Get Accumulated cashback",
+                schema=AccumulatedCashbackResponseSerializer
+            ),
+            500: openapi.Response(
+                description="External service unavailable",
+                schema=GenericErrorResponseSerializer
+            )
+        }
+    )
+    def get(self, request) -> Response:
+        cpf = request.user.cpf
+
+        try:
+            accumulated_cashback = get_accumulated_cashback(cpf)
+
+        except ExternalServiceBroken:
+            return Response(
+                {'detail': 'Server is unstable, please try once again later'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+        return Response(accumulated_cashback, status=status.HTTP_200_OK)
