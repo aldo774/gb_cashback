@@ -1,0 +1,2 @@
+class CPFAlreadyInUse(Exception):
+    pass
