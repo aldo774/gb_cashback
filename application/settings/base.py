@@ -122,21 +122,36 @@ USE_L10N = True
 USE_TZ = True
 
 ## Logging configuration
+
+LOCAL_LOGGER_CONF = {
+    'handlers': ['console'],
+    'level': 'INFO',
+}
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'filters': {
+        'hide_document': {
+            '()': f'{Base.name}.logs.HideDocument'
+        },
+        'hide_email': {
+            '()': f'{Base.name}.logs.HideEmail'
+        },
+        'hide_name': {
+            '()': f'{Base.name}.logs.HideName'
+        },
+        'hide_password': {
+            '()': f'{Base.name}.logs.HidePassword'
+        },
+    },
     'handlers': {
-        'file': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR, 'debug.log'),
+        'console': {
+            'filters': ['hide_document', 'hide_email', 'hide_name', 'hide_password'],
+            'class': 'logging.StreamHandler',
         },
     },
     'loggers': {
-        'django': {
-            'handlers': ['file'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
+        **{app: LOCAL_LOGGER_CONF.copy() for app in LOCAL_APPS}
     },
 }
