@@ -17,3 +17,10 @@ class InvalidOrderData(Exception):
 
     def __init__(self, detail=None):
         self.detail = detail or self.msg
+
+
+class ExternalServiceBroken(Exception):
+    msg = 'External Service Broken'
+
+    def __init__(self, detail=None):
+        self.detail = detail or self.msg
